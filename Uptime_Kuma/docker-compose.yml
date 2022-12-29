@@ -3,6 +3,7 @@ services:
   uptime-kuma:
     image: louislam/uptime-kuma
     container_name: uptime-kuma
+    restart: always
     volumes:
       - ./uptime-kuma:/app/data
     ports:
