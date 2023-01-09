@@ -1,7 +1,7 @@
 #!/bin/bash
 
 arr_info=()
-docker_container1=/home/dokcer/
+docker_container1=/home/docker/
 
 red() {
 	echo -e "\033[31m\033[01m$1\033[0m"
@@ -169,8 +169,8 @@ docker_Nginx_Proxy_Manager(){
 
 # 选择安装docker容器
 docker_container(){
-    read -p "请输入docker容器安装路径[默认/home/dokcer/]:" docker_container_path
-    [[ -z "${docker_container_path}" ]] && docker_container_path=/home/dokcer/
+    read -p "请输入docker容器安装路径[默认/home/docker/]:" docker_container_path
+    [[ -z "${docker_container_path}" ]] && docker_container_path=/home/docker/
     if [ -d "$docker_container_path" ]; then
         yellow "$docker_container_path is a directory"
     fi
