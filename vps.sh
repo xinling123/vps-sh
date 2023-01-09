@@ -18,8 +18,7 @@ yellow() {
 
 # docker 安装
 docker_install(){
-    docker -v
-    if [ $? -eq 0 ]; then
+    if ! type docker >/dev/null 2>&1; then
         green "docker已经安装"
     else
         yellow "开始安装docker"
@@ -208,8 +207,7 @@ docker_container(){
 
 
 backup_docker_date(){
-    rclone -v
-    if [ $? -eq 0 ]; then
+    if ! type rclone >/dev/null 2>&1; then
         green "rclone已经安装"
     else
         yellow "开始安装rclone"
