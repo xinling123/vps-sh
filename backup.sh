@@ -1,1 +1,1 @@
-echo "hello world"
+echo "hello world" > /home/backup/backup.log

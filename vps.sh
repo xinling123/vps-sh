@@ -202,6 +202,9 @@ docker_container(){
             docker_index $i ;
         done
         echo -e ${arr_info[@]}
+        cd ${docker_container_path}
+        cd ..
+        rm -rf vps-sh/
     done
 }
 
@@ -229,18 +232,25 @@ backup_docker_date(){
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         if [ -d "$docker_container1" ]; then
-            yellow "将备份 $docker_container1 文件夹下的docker数据"
+            green "将备份 $docker_container1 文件夹下的docker数据"
             cd /home
             mkdir backup
             chmod 777 backup
             git clone https://github.com/xinling123/vps-sh.git
             cp ./vps-sh/backup.sh ./backup/
-            # echo '0 4 */3 * * root /home/' >> /etc/crontab
-            echo '* * * * * root /home/backup/backup.sh > /home/backup/backup.log' >> /etc/crontab
+            grep "backup.sh" /etc/crontab >/dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                green "定时任务已存在，将每隔3天凌晨4点备份数据到onedrive"
+            else
+                # echo '0 4 */3 * * root /home/' >> /etc/crontab
+                echo '* * * * * root /home/backup/backup.sh > /home/backup/backup.log' >> /etc/crontab
+                green "将每隔3天凌晨4点备份数据到onedrive"
+            fi
         else
             red "未检测到 $docker_container1 文件夹"
         fi
     fi
+    rm -rf /home/vps-sh/
 }
 
 
