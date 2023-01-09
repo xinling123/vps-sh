@@ -1,7 +1,7 @@
 #!/bin/bash
 
 arr_info=()
-docker_container1=/home/docker
+docker_container1=/home/docker/
 
 red() {
 	echo -e "\033[31m\033[01m$1\033[0m"
@@ -235,15 +235,15 @@ backup_docker_date(){
             green "将备份 $docker_container1 文件夹下的docker数据"
             cd /home
             mkdir backup
-            chmod 777 backup
             git clone https://github.com/xinling123/vps-sh.git
             cp ./vps-sh/backup.sh ./backup/
+            chmod 777 ./backup/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 green "定时任务已存在，将每隔3天凌晨4点备份数据到onedrive"
             else
                 # echo '0 4 */3 * * root /home/' >> /etc/crontab
-                echo '*/5 * * * * root /home/backup/backup.sh ${docker_container1} > /home/backup/backup.log' >> /etc/crontab
+                echo '*/5 * * * * root /home/backup/backup.sh '$docker_container1 >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
         else
