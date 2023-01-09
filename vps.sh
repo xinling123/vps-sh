@@ -2,6 +2,7 @@
 
 arr_info=()
 docker_container1=/home/docker/
+onedrive_name=""
 
 red() {
 	echo -e "\033[31m\033[01m$1\033[0m"
@@ -226,7 +227,8 @@ backup_docker_date(){
         mkdir onedrive
         chmod 777 onedrive/
         read -p "请输入onedrive的名字：" name
-        rclone mount $name:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
+        onedrive_name = name
+        rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
     fi
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
@@ -244,7 +246,7 @@ backup_docker_date(){
             else
                 # echo '0 4 */3 * * root /home/' >> /etc/crontab
                 # echo '*/5 * * * * root /home/backup/backup.sh '$docker_container1 >> /etc/crontab
-                echo '0 4 */3 * * root /home/backup/backup.sh '$docker_container1 >> /etc/crontab
+                echo '0 4 */3 * * root /home/backup/backup.sh '$docker_container1 $onedrive_name >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
         else

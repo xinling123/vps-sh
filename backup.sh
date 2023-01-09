@@ -13,6 +13,6 @@ do
     fi
 done
 
-rclone copy /home/backup/$time 9929:/Backup/9929-$time   --ignore-existing -u -v -P --transfers=10 --ignore-errors --check-first --checkers=10
+rclone copy /home/backup/$time $2:/Backup/$2-$time   --ignore-existing -u -v -P --transfers=10 --ignore-errors --check-first --checkers=10
 rm -rf /home/backup/$time
 echo $(date "+%Y-%m-%d %H:%M:%S")'：同步完成！' > /home/backup/backup.log
