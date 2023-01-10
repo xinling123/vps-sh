@@ -2,7 +2,7 @@
 
 arr_info=()
 docker_container1=/home/docker/
-onedrive_name=""
+onedrive_name=9929
 
 red() {
 	echo -e "\033[31m\033[01m$1\033[0m"
@@ -215,6 +215,7 @@ backup_docker_date(){
         green "rclone已经安装"
     else
         yellow "开始安装rclone"
+        apt install zip -y
         curl https://rclone.org/install.sh | sudo bash
         rclone config
         green "rclone安装完成"
@@ -222,12 +223,12 @@ backup_docker_date(){
     read -p "是否挂载onedrive[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
-        apt install fuse zip
+        apt install fuse -y
         cd /
         mkdir onedrive
         chmod 777 onedrive/
         read -p "请输入onedrive的名字：" name
-        onedrive_name = name
+        onedrive_name = $name
         rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
     fi
     read -p "是否开始自动备份[默认y]：" y

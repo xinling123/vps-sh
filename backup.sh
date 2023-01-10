@@ -9,7 +9,9 @@ for dir_name in $(ls $1)
 do
     cur_dir="$1/$dir_name"
     if [ -d $cur_dir ];then
-    tar -zcvf $dir_name.tar.gz $cur_dir >/dev/null 2>&1
+    		cd $1
+        	tar -zcvf $dir_name.tar.gz $dir_name >/dev/null 2>&1
+        	mv $dir_name.tar.gz /home/backup/$time
     fi
 done
 
