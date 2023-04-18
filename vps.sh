@@ -1,17 +1,20 @@
 #!/bin/bash
 
+# 保存输出所有的安装的应用
 arr_info=()
-docker_container1=/home/docker/
+# docker的安装目录
+docker_container1=/data1/docker/
+# OneDrive的备份名字
 onedrive_name=9929
-
+# 显示红色的输出
 red() {
 	echo -e "\033[31m\033[01m$1\033[0m"
 }
-
+# 显示绿色的输出
 green() {
 	echo -e "\033[32m\033[01m$1\033[0m"
 }
-
+# 显示黄色的输出
 yellow() {
 	echo -e "\033[33m\033[01m$1\033[0m"
 }
@@ -19,9 +22,10 @@ yellow() {
 
 # docker 安装
 docker_install(){
+    # 判断docker是否已经安装
     if type docker >/dev/null 2>&1; then
         green "docker已经安装"
-    else
+    else  # 开始安装docker
         yellow "开始安装docker"
         curl -sSL https://get.daocloud.io/docker | sh
         systemctl enable docker
@@ -40,13 +44,31 @@ docker_index(){
     0) count=1 ;;
     1) arr_info[1]="Nginx Proxy Manager  $myip:81 Email:admin@example.com Password: changeme\n"; docker_Nginx_Proxy_Manager ;;
     2) arr_info[2]="Easyimage  $myip:8180\n"; docker_Easyimage ;;
-    3) arr_info[3]="emby  $myip:8096\n"; docker_emby ;;
+    3) arr_info[3]="Emby  $myip:8096\n"; docker_emby ;;
     4) arr_info[4]="Halo  $myip:8090\n"; docker_Halo ;;
     5) arr_info[5]="NAS-TOOL  $myip:3000 User:admin Password:password\n"; docker_NAS_TOOL ;;
     6) arr_info[6]="qbittorrent  $myip:8080\n"; docker_qbittorrent ;;
     7) arr_info[7]="Uptime Kuma  $myip:3001\n"; docker_Uptime_Kuma ;;
+    8) arr_info[8]="X-ui  $myip:54321\n"; docker_X-ui ;;
     *) red "输入错误";;
     esac
+}
+
+# 安装X-ui面板
+docker_X-ui(){
+    if [ -d "vps-sh/X-ui/" ]; then
+        cp -r vps-sh/X-ui $docker_container1
+        cd $docker_container1/X-ui
+        docker-compose up -d
+        if [ $? -eq 0 ]; then
+            green "X-ui 安装成功"
+        else
+            red "X-ui 失败"
+        fi
+    else
+        red "X-ui docker-compose文件不存在"
+    fi
+    cd ../..
 }
 
 # 安装Uptime Kuma
@@ -119,17 +141,17 @@ docker_Halo(){
 
 # 安装emby
 docker_emby(){
-    if [ -d "vps-sh/emby/" ]; then
-        cp -r vps-sh/emby $docker_container1
-        cd $docker_container1/emby
+    if [ -d "vps-sh/Emby/" ]; then
+        cp -r vps-sh/Emby $docker_container1
+        cd $docker_container1/Emby
         docker-compose up -d
         if [ $? -eq 0 ]; then
-            green "emby 安装成功"
+            green "Emby 安装成功"
         else
-            red "emby 失败"
+            red "Emby 失败"
         fi
     else
-        red "emby docker-compose文件不存在"
+        red "Emby docker-compose文件不存在"
     fi
     cd ../..
 }
@@ -171,7 +193,7 @@ docker_Nginx_Proxy_Manager(){
 # 选择安装docker容器
 docker_container(){
     read -p "请输入docker容器安装路径[默认/home/docker/]:" docker_container_path
-    [[ -z "${docker_container_path}" ]] && docker_container_path=/home/docker/
+    [[ -z "${docker_container_path}" ]] && docker_container_path=$docker_container1
     if [ -d "$docker_container_path" ]; then
         yellow "$docker_container_path is a directory"
     fi
@@ -195,6 +217,7 @@ docker_container(){
         yellow "5.安装NAS-TOOL"
         yellow "6.安装qbittorrent4.3.8"
         yellow "7.安装Uptime Kuma"
+        yellow "7.安装X-ui面板"
 
         read -p "请输入选择的数字：" -a  number
 
@@ -260,9 +283,10 @@ backup_docker_date(){
 
 # 系统初始化
 system_init(){
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     apt update -y && apt install wget curl git -y
-    read -p "是否挂载硬盘[默认y]：" y
-    [[ -z "${y}" ]] && y="y"
+    read -p "是否挂载硬盘[默认n]：" y
+    [[ -z "${y}" ]] && y="n"
     if [ $y == "y" ]; then
         fdisk /dev/sda
         mkfs.ext4 /dev/sda1
@@ -271,8 +295,8 @@ system_init(){
         mount /dev/sda1 /data1
         echo '/dev/sda1 /data1 ext4 defaults  0  0' >> /etc/fstab
     fi
-    read -p "是否增加虚拟内存[默认y]：" y
-    [[ -z "${y}" ]] && y="y"
+    read -p "是否增加虚拟内存[默认n]：" y
+    [[ -z "${y}" ]] && y="n"
     if [ $y == "y" ]; then
         wget https://www.moerats.com/usr/shell/swap.sh && bash swap.sh
     fi
@@ -288,6 +312,11 @@ system_init(){
     fi
 }
 
+
+x-ray(){
+    chmod 700 ./x-ray.sh && ./x-ray.sh
+}
+
 # 初始化界面
 start(){
     while true
@@ -297,16 +326,20 @@ start(){
         yellow "1.安装docker"
         yellow "2.安装docker容器"
         yellow "3.备份docker数据到onedrive"
+        yellow "4.安装x-ray"
 
         read -p "请输入选择的数字：" number
-        # [[ -z "${PORT}" ]] && PORT=443
-        case $number in 
+        for i in ${number[@]};
+        do
+            case $i in 
             0) system_init ;;
             1) docker_install ;;
             2) docker_container ;;
             3) backup_docker_date ;;
+            4) x-ray;;
             *) red "输入错误";;
             esac
+        done
     done
 }
 
