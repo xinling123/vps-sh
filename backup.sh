@@ -17,4 +17,5 @@ done
 
 rclone copy $1/backup/$time $2:/Backup/$2-$time   --ignore-existing -u -v -P --transfers=10 --ignore-errors --check-first --checkers=10
 rm -rf $1/backup/$time
+rclone --min-age 3d delete $2:/Backup
 echo $(date "+%Y-%m-%d %H:%M:%S")'：同步完成！' > $1/backup/backup.log
