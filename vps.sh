@@ -3,7 +3,7 @@
 # 保存输出所有的安装的应用
 arr_info=()
 # docker的安装目录
-docker_container1=/data1/docker/
+docker_container1=/data1/vps/docker/
 # OneDrive的备份名字
 onedrive_name=9929
 # 显示红色的输出
@@ -259,7 +259,7 @@ backup_docker_date(){
     if [ $y == "y" ]; then
         if [ -d "$docker_container1" ]; then
             green "将备份 $docker_container1 文件夹下的docker数据"
-            cd /home
+            cd $docker_container1
             mkdir backup
             git clone https://github.com/xinling123/vps-sh.git
             cp ./vps-sh/backup.sh ./backup/
@@ -270,7 +270,7 @@ backup_docker_date(){
             else
                 # echo '0 4 */3 * * root /home/' >> /etc/crontab
                 # echo '*/5 * * * * root /home/backup/backup.sh '$docker_container1 >> /etc/crontab
-                echo '0 4 */3 * * root /home/backup/backup.sh '$docker_container1 $onedrive_name >> /etc/crontab
+                echo '0 4 */3 * * root /data1/vps/docker/backup/backup.sh '$docker_container1 $onedrive_name >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
         else
