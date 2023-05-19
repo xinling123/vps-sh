@@ -148,7 +148,7 @@ docker_emby(){
         if [ $? -eq 0 ]; then
             green "Emby 安装成功"
         else
-            red "Emby 失败"
+            red "Emby 失败"  
         fi
     else
         red "Emby docker-compose文件不存在"
