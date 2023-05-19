@@ -198,7 +198,7 @@ docker_container(){
         yellow "$docker_container_path is a directory"
     fi
     docker_container1=$docker_container_path
-    mkdir $docker_container_path
+    mkdir -p $docker_container_path
     cd $docker_container_path
     cd ..
     git clone https://github.com/xinling123/vps-sh.git
