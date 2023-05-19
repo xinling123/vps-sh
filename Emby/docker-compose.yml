@@ -1,0 +1,12 @@
+version: "3"
+services:
+  emby:
+    image: emby/embyserver:latest
+    ports:
+      - 8096:8096        # 默认的webui控制端口
+      - 8920:8920
+    volumes:
+      - ./config:/config   # 冒号左边请修改为你想保存配置的路径
+      - /data1:/mnt/share   # 媒体目录，多个目录需要分别映射进来，需要满足配置文件说明中的要求
+    restart: always
+    container_name: emby
