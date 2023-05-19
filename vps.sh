@@ -192,7 +192,7 @@ docker_Nginx_Proxy_Manager(){
 
 # 选择安装docker容器
 docker_container(){
-    read -p "请输入docker容器安装路径[默认/home/docker/]:" docker_container_path
+    read -p "请输入docker容器安装路径[默认/data1/vps/docker/]:" docker_container_path
     [[ -z "${docker_container_path}" ]] && docker_container_path=$docker_container1
     if [ -d "$docker_container_path" ]; then
         yellow "$docker_container_path is a directory"
@@ -217,7 +217,7 @@ docker_container(){
         yellow "5.安装NAS-TOOL"
         yellow "6.安装qbittorrent4.3.8"
         yellow "7.安装Uptime Kuma"
-        yellow "7.安装X-ui面板"
+        yellow "8.安装X-ui面板"
 
         read -p "请输入选择的数字：" -a  number
 
@@ -228,7 +228,7 @@ docker_container(){
         echo -e ${arr_info[@]}
         cd ${docker_container_path}
         cd ..
-        rm -rf vps-sh/
+        # rm -rf vps-sh/
     done
 }
 
@@ -277,7 +277,7 @@ backup_docker_date(){
             red "未检测到 $docker_container1 文件夹"
         fi
     fi
-    rm -rf /home/vps-sh/
+    # rm -rf /home/vps-sh/
 }
 
 
