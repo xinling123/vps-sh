@@ -27,7 +27,7 @@ docker_install(){
         green "docker已经安装"
     else  # 开始安装docker
         yellow "开始安装docker"
-        curl -sSL https://get.daocloud.io/docker | sh
+        curl -fsSL https://get.docker.com | bash
         systemctl enable docker
         apt install docker-compose -y
         curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
