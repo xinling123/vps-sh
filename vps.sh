@@ -239,7 +239,7 @@ backup_docker_date(){
     else
         yellow "开始安装rclone"
         apt install zip -y
-        curl https://rclone.org/install.sh | sudo bash
+        curl https://rclone.org/install.sh | bash
         rclone config
         green "rclone安装完成"
     fi
