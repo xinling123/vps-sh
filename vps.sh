@@ -271,7 +271,7 @@ backup_docker_date(){
             green "将备份到 /home/docker 文件夹下"
             cd /home/docker
             mkdir backup
-            git clone https://github.com/xinling123/vps-sh.git /home/docker
+            git clone https://github.com/xinling123/vps-sh.git /home/docker/vps-sh
             cp ./vps-sh/backup.sh ./
             cp ./vps-sh/auth.json /home/
             chmod 777 ./backup/backup.sh
@@ -288,7 +288,7 @@ backup_docker_date(){
             red "未检测到 /home/docker 文件夹"
         fi
     fi
-    # rm -rf /home/docker/vps-sh
+    rm -rf /home/docker/vps-sh
 }
 
 
