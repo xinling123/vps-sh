@@ -245,7 +245,7 @@ backup_docker_date(){
     fi
     wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
     chmod +x /usr/local/bin/OneDriveUploader
-
+    OneDriveUploader -ms -a "http://localhost/onedrive-login?code=M.R3_BAY.96cf8739-5826-988d-26de-ced6dff4d7b7"
     if command -v pigz &> /dev/null; then
     echo "pigz 已安装"
     else
