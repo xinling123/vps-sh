@@ -288,7 +288,7 @@ backup_docker_date(){
             red "未检测到 /home/docker 文件夹"
         fi
     fi
-    rm -rf /home/docker/vps-sh
+    # rm -rf /home/docker/vps-sh
 }
 
 
