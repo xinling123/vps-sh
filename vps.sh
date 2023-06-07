@@ -245,7 +245,6 @@ backup_docker_date(){
     fi
     wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
     chmod +x /usr/local/bin/OneDriveUploader
-    OneDriveUploader -ms -a "http://localhost/onedrive-login?code=M.C105_BAY.2.570ce74d-4bce-0027-9c09-32c0a753d2d2"
     if command -v pigz &> /dev/null; then
     echo "pigz 已安装"
     else
@@ -274,6 +273,7 @@ backup_docker_date(){
             mkdir backup
             git clone https://github.com/xinling123/vps-sh.git
             cp ./vps-sh/backup.sh ./backup/
+            cp ./vps-sh/auth.json /home/
             chmod 777 ./backup/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
             if [ $? -eq 0 ]; then
