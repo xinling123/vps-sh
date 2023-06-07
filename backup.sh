@@ -49,7 +49,7 @@ echo $(date "+%Y-%m-%d %H:%M:%S"): echo "正在打包所有文件..." >> /home/d
 tar --use-compress-program=pigz -cvpf $1.tar.gz $BACKUP_DIR >/dev/null 2>&1
 echo $(date "+%Y-%m-%d %H:%M:%S"): echo "打包完成！" >> /home/docker/backup.log
 echo $(date "+%Y-%m-%d %H:%M:%S"): echo "开始同步文件到OneDrive！" >> /home/docker/backup.log
-OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup/$1/$time"
+OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup/$1/$time" >/dev/null 2>&1
 # 要发送的消息
 MESSAGE="$(date "+%Y-%m-%d %H:%M:%S"): $1 同步完成！"
 echo $MESSAGE >> /home/docker/backup.log
@@ -59,4 +59,5 @@ echo $(date "+%Y-%m-%d %H:%M:%S"): echo "删除本地备份文件！" >> /home/d
 # 使用curl命令向Telegram Bot API发送请求
 curl -s -X POST "https://api.telegram.org/bot$API_TOKEN/sendMessage" \
      -d "chat_id=$CHAT_ID" \
-     -d "text=$MESSAGE"
+     -d "text=$MESSAGE" >> /home/docker/backup.log
+echo "" >> /home/docker/backup.log
