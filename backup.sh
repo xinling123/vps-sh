@@ -6,6 +6,8 @@ BACKUP_DIR="/home/docker/backup/"
 # EXCLUDE_CONTAINERS=("container1" "container2")
 EXCLUDE_CONTAINERS=("qbittorrent" "emby" "dashboard-dashboard-1")
 
+time=$(date "+%Y-%m-%d")
+
 # 创建备份目录
 mkdir -p $BACKUP_DIR
 
@@ -15,7 +17,7 @@ for container_id in $(docker ps -aq); do
     container_name=$(docker inspect --format='{{.Name}}' $container_id | sed 's/\///g')
     image_name=$(docker inspect --format='{{.Config.Image}}' $container_id)
 
-    echo "备份容器: $container_name"
+    echo $(date "+%Y-%m-%d %H:%M:%S"): "备份容器: $container_name" > /home/docker/backup.log
 
     # 备份容器数据
     docker export -o $BACKUP_DIR/${container_name}_backup.tar $container_id
@@ -25,7 +27,7 @@ for container_id in $(docker ps -aq); do
 
     # 检查是否为需要排除的容器
     if [[ " ${EXCLUDE_CONTAINERS[@]} " =~ " ${container_name} " ]]; then
-        echo "跳过容器映射文件备份: $container_name"
+        echo $(date "+%Y-%m-%d %H:%M:%S"): "跳过容器映射文件备份: $container_name" > /home/docker/backup.log
         continue
     fi
 
@@ -35,13 +37,16 @@ for container_id in $(docker ps -aq); do
             cp -R $source $BACKUP_DIR/${container_name}_mounted_files
         fi
     done
-
 done
-echo "备份完成！"
-
+echo $(date "+%Y-%m-%d %H:%M:%S"): "备份完成！" > /home/docker/backup.log
 cd $BACKUP_DIR
 
-echo "正在打包所有文件..."
+echo $(date "+%Y-%m-%d %H:%M:%S"): echo "正在打包所有文件..." > /home/docker/backup.log
 tar --use-compress-program=pigz -cvpf $1.tar.gz $BACKUP_DIR >/dev/null 2>&1
-echo "打包完成！"
-OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup"
+echo $(date "+%Y-%m-%d %H:%M:%S"): echo "打包完成！" > /home/docker/backup.log
+echo $(date "+%Y-%m-%d %H:%M:%S"): echo "开始同步文件到OneDrive！" > /home/docker/backup.log
+OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup/$1/$time"
+echo $(date "+%Y-%m-%d %H:%M:%S"): echo "同步完成！" > /home/docker/backup.log
+rm -rf $BACKUP_DIR
+echo $(date "+%Y-%m-%d %H:%M:%S"): echo "删除本地备份文件！" > /home/docker/backup.log
+
