@@ -243,23 +243,32 @@ backup_docker_date(){
         rclone config
         green "rclone安装完成"
     fi
-    read -p "是否挂载onedrive[默认y]：" y
-    [[ -z "${y}" ]] && y="y"
-    if [ $y == "y" ]; then
-        apt install fuse -y
-        cd /
-        mkdir onedrive
-        chmod 777 onedrive/
-        read -p "请输入onedrive的名字：" name
-        onedrive_name = $name
-        rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
+    wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
+    chmod +x /usr/local/bin/OneDriveUploader
+
+    if command -v pigz &> /dev/null; then
+    echo "pigz 已安装"
+    else
+        echo "pigz 未安装"
+    fi
+
+    # read -p "是否挂载onedrive[默认y]：" y
+    # [[ -z "${y}" ]] && y="y"
+    # if [ $y == "y" ]; then
+    #     apt install fuse -y
+    #     cd /
+    #     mkdir onedrive
+    #     chmod 777 onedrive/
+    read -p "请输入onedrive挂载的名字：" name
+    $onedrive_name = $name
+    #     rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
     fi
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
-        if [ -d "$docker_container1" ]; then
-            green "将备份 $docker_container1 文件夹下的docker数据"
-            cd $docker_container1
+        if [ -d "/home/docker" ]; then
+            green "将备份到 /home/docker 文件夹下"
+            cd /home/docker
             mkdir backup
             git clone https://github.com/xinling123/vps-sh.git
             cp ./vps-sh/backup.sh ./backup/
@@ -270,11 +279,11 @@ backup_docker_date(){
             else
                 # echo '0 4 */3 * * root /home/' >> /etc/crontab
                 # echo '*/5 * * * * root /home/backup/backup.sh '$docker_container1 >> /etc/crontab
-                echo '0 4 */3 * * root /data1/vps/docker/backup/backup.sh '$docker_container1 $onedrive_name >> /etc/crontab
+                echo '0 4 */3 * * root /home/docker/backup/backup.sh ' $onedrive_name >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
         else
-            red "未检测到 $docker_container1 文件夹"
+            red "未检测到 /home/docker 文件夹"
         fi
     fi
     # rm -rf /home/vps-sh/
