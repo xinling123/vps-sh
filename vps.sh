@@ -274,7 +274,7 @@ backup_docker_date(){
             git clone https://github.com/xinling123/vps-sh.git /home/docker/vps-sh
             cp ./vps-sh/backup.sh ./
             cp ./vps-sh/auth.json /home/
-            chmod 777 ./backup/backup.sh
+            chmod 777 ./backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 green "定时任务已存在，将每隔3天凌晨4点备份数据到onedrive"
