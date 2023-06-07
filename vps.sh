@@ -259,13 +259,15 @@ backup_docker_date(){
     #     cd /
     #     mkdir onedrive
     #     chmod 777 onedrive/
-    read -p "请输入onedrive挂载的名字：" name
-    $onedrive_name = $name
+        # read -p "请输入onedrive挂载的名字：" name
+        # $onedrive_name = $name
     #     rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
-    fi
+    # fi
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
+        read -p "请输入onedrive挂载的名字：" name
+        $onedrive_name = $name
         if [ -d "/home/docker" ]; then
             green "将备份到 /home/docker 文件夹下"
             cd /home/docker
