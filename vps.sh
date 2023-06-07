@@ -282,7 +282,7 @@ backup_docker_date(){
             else
                 # echo '0 4 */3 * * root /home/' >> /etc/crontab
                 # echo '*/5 * * * * root /home/backup/backup.sh '$docker_container1 >> /etc/crontab
-                echo '0 4 */3 * * root /home/docker/backup/backup.sh ' $onedrive_name >> /etc/crontab
+                echo '0 4 */3 * * root /home/docker/backup.sh ' $onedrive_name >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
         else
