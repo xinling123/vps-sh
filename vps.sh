@@ -272,7 +272,7 @@ backup_docker_date(){
             cd /home/docker
             mkdir backup
             git clone https://github.com/xinling123/vps-sh.git  -o /home/docker
-            cp ./vps-sh/backup.sh ./backup/
+            cp ./vps-sh/backup.sh .
             cp ./vps-sh/auth.json /home/
             chmod 777 ./backup/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
