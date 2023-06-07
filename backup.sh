@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 备份文件路径
-BACKUP_DIR="/home/backup"
+BACKUP_DIR="/home/docker/backup/"
 
 # EXCLUDE_CONTAINERS=("container1" "container2")
 EXCLUDE_CONTAINERS=("qbittorrent" "emby" "dashboard-dashboard-1")
@@ -44,4 +44,4 @@ cd $BACKUP_DIR
 echo "正在打包所有文件..."
 tar --use-compress-program=pigz -cvpf $1.tar.gz $BACKUP_DIR >/dev/null 2>&1
 echo "打包完成！"
-
+OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup"
