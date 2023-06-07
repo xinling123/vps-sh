@@ -51,7 +51,7 @@ echo $(date "+%Y-%m-%d %H:%M:%S"): echo "打包完成！" >> /home/docker/backup
 echo $(date "+%Y-%m-%d %H:%M:%S"): echo "开始同步文件到OneDrive！" >> /home/docker/backup.log
 OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup/$1/$time"
 # 要发送的消息
-MESSAGE=$(date "+%Y-%m-%d %H:%M:%S"): $1：同步完成！
+MESSAGE="$(date "+%Y-%m-%d %H:%M:%S"): $1 同步完成！"
 echo $MESSAGE >> /home/docker/backup.log
 rm -rf $BACKUP_DIR
 echo $(date "+%Y-%m-%d %H:%M:%S"): echo "删除本地备份文件！" >> /home/docker/backup.log
