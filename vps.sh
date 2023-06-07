@@ -267,7 +267,7 @@ backup_docker_date(){
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         read -p "请输入onedrive挂载的名字：" name
-        onedrive_name = $name
+        onedrive_name=$name
         if [ -d "/home/docker" ]; then
             green "将备份到 /home/docker 文件夹下"
             cd /home/docker
