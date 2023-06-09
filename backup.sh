@@ -7,8 +7,10 @@ CHAT_ID="1287013549"
 # 备份文件路径
 BACKUP_DIR="/home/docker/backup/"
 
-# EXCLUDE_CONTAINERS=("container1" "container2")
+# 跳过备份的容器映射文件
 EXCLUDE_CONTAINERS=("qbittorrent" "emby" "dashboard-dashboard-1")
+# 跳过备份的容器
+EXCLUDE_CONTAINERS1=("ifile" "mysql_ifile" "crawlab_master" "crawlab_mongo_1")
 
 time=$(date "+%Y-%m-%d")
 
@@ -22,6 +24,12 @@ for container_id in $(docker ps -aq); do
     image_name=$(docker inspect --format='{{.Config.Image}}' $container_id)
 
     echo $(date "+%Y-%m-%d %H:%M:%S"): "备份容器: $container_name" >> /home/docker/backup.log
+
+    # 检查是否为需要排除的容器
+    if [[ " ${EXCLUDE_CONTAINERS1[@]} " =~ " ${container_name} " ]]; then
+        echo $(date "+%Y-%m-%d %H:%M:%S"): "跳过容器备份: $container_name" >> /home/docker/backup.log
+        continue
+    fi
 
     # 备份容器数据
     docker export -o $BACKUP_DIR/${container_name}_backup.tar $container_id
