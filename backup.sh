@@ -10,7 +10,7 @@ BACKUP_DIR="/home/docker/backup/"
 # 跳过备份的容器映射文件
 EXCLUDE_CONTAINERS=("qbittorrent" "emby" "dashboard-dashboard-1")
 # 跳过备份的容器
-EXCLUDE_CONTAINERS1=("ifile" "mysql_ifile" "crawlab_master" "crawlab_mongo_1")
+EXCLUDE_CONTAINERS1=("ifile" "mysql_ifile" "crawlab_master" "crawlab_mongo_1" "nastools")
 
 time=$(date "+%Y-%m-%d")
 
