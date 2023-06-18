@@ -10,7 +10,7 @@ BACKUP_DIR="/home/docker/backup/"
 # 跳过备份的容器映射文件
 EXCLUDE_CONTAINERS=("qbittorrent" "emby" "dashboard-dashboard-1")
 # 跳过备份的容器
-EXCLUDE_CONTAINERS1=("ifile" "mysql_ifile" "crawlab_master" "crawlab_mongo_1" "nastools")
+EXCLUDE_CONTAINERS1=("ifile" "mysql_ifile" "crawlab_master" "crawlab_mongo_1" "nastools" "h5ai" "ifile" "mysql_ifile")
 
 time=$(date "+%Y-%m-%d")
 
@@ -37,6 +37,10 @@ for container_id in $(docker ps -aq); do
     # 备份容器的配置信息和元数据
     docker inspect $container_id > $BACKUP_DIR/${container_name}_metadata.json
 
+    # 备份映射的端口
+    port_bindings=$(docker port $container_id)
+    echo $port_bindings > $BACKUP_DIR/${container_name}_port_bindings.txt
+    
     # 检查是否为需要排除的容器
     if [[ " ${EXCLUDE_CONTAINERS[@]} " =~ " ${container_name} " ]]; then
         echo $(date "+%Y-%m-%d %H:%M:%S"): "跳过容器映射文件备份: $container_name" >> /home/docker/backup.log
@@ -49,6 +53,7 @@ for container_id in $(docker ps -aq); do
             cp -R $source $BACKUP_DIR/${container_name}_mounted_files
         fi
     done
+
 done
 echo $(date "+%Y-%m-%d %H:%M:%S"): "备份完成！" >> /home/docker/backup.log
 cd $BACKUP_DIR
