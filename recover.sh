@@ -6,9 +6,6 @@ BACKUP_DIR="/home/docker"
 # 恢复备份文件的目标路径
 RESTORE_DIR="/home/back"
 
-# 解压缩备份文件
-# tar -xvf $1 -C $RESTORE_DIR
-
 # 获取备份文件中的容器列表
 container_files=$(ls $RESTORE_DIR | grep "_backup.tar")
 

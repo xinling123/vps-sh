@@ -50,7 +50,10 @@ for container_id in $(docker ps -aq); do
     # 备份映射的文件
     docker inspect --format='{{ range .Mounts }}{{ .Source }}{{ printf "\n" }}{{ end }}' $container_id | while read -r source; do
         if [ ! -z "$source" ] && [ -d "$source" ]; then
-            cp -R $source $BACKUP_DIR/${container_name}_mounted_files
+            # 获取目录名
+            dir_name=$(basename "$source")
+            mkdir -p $BACKUP_DIR/${container_name}_mounted_files/$dir_name
+            cp -R $source $BACKUP_DIR/${container_name}_mounted_files/$dir_name
         fi
     done
 

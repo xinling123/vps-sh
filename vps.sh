@@ -49,24 +49,24 @@ docker_index(){
     5) arr_info[5]="NAS-TOOL  $myip:3000 User:admin Password:password\n"; docker_NAS_TOOL ;;
     6) arr_info[6]="qbittorrent  $myip:8080\n"; docker_qbittorrent ;;
     7) arr_info[7]="Uptime Kuma  $myip:3001\n"; docker_Uptime_Kuma ;;
-    8) arr_info[8]="X-ui  $myip:54321\n"; docker_X-ui ;;
+    8) arr_info[8]="3x-ui  $myip:54321\n"; docker_3x-ui ;;
     *) red "输入错误";;
     esac
 }
 
-# 安装X-ui面板
-docker_X-ui(){
-    if [ -d "vps-sh/X-ui/" ]; then
-        cp -r vps-sh/X-ui $docker_container1
-        cd $docker_container1/X-ui
+# 安装3x-ui面板
+docker_3x-ui(){
+    if [ -d "vps-sh/3x-ui/" ]; then
+        cp -r vps-sh/3x-ui $docker_container1
+        cd $docker_container1/3x-ui
         docker-compose up -d
         if [ $? -eq 0 ]; then
-            green "X-ui 安装成功"
+            green "3x-ui 安装成功"
         else
-            red "X-ui 失败"
+            red "3x-ui 失败"
         fi
     else
-        red "X-ui docker-compose文件不存在"
+        red "3x-ui docker-compose文件不存在"
     fi
     cd ../..
 }
@@ -217,7 +217,7 @@ docker_container(){
         yellow "5.安装NAS-TOOL"
         yellow "6.安装qbittorrent4.3.8"
         yellow "7.安装Uptime Kuma"
-        yellow "8.安装X-ui面板"
+        yellow "8.安装3x-ui面板"
 
         read -p "请输入选择的数字：" -a  number
 
