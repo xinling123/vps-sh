@@ -3,7 +3,7 @@
 # 保存输出所有的安装的应用
 arr_info=()
 # docker的安装目录
-docker_container1=/data1/vps/docker/
+docker_container1=/home/docker/
 # OneDrive的备份名字
 onedrive_name=9929
 # 显示红色的输出
