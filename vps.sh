@@ -49,7 +49,7 @@ docker_index(){
     5) arr_info[5]="NAS-TOOL  $myip:3000 User:admin Password:password\n"; docker_NAS_TOOL ;;
     6) arr_info[6]="qbittorrent  $myip:8080\n"; docker_qbittorrent ;;
     7) arr_info[7]="Uptime Kuma  $myip:3001\n"; docker_Uptime_Kuma ;;
-    8) arr_info[8]="3x-ui  $myip:54321\n"; docker_3x-ui ;;
+    8) arr_info[8]="3x-ui  $myip:2053\n"; docker_3x-ui ;;
     *) red "输入错误";;
     esac
 }
