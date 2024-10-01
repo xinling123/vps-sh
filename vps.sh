@@ -192,7 +192,7 @@ docker_Nginx_Proxy_Manager(){
 
 # 选择安装docker容器
 docker_container(){
-    read -p "请输入docker容器安装路径[默认/data1/vps/docker/]:" docker_container_path
+    read -p "请输入docker容器安装路径[默认/home/docker/]:" docker_container_path
     [[ -z "${docker_container_path}" ]] && docker_container_path=$docker_container1
     if [ -d "$docker_container_path" ]; then
         yellow "$docker_container_path is a directory"
