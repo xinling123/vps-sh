@@ -1,5 +1,4 @@
 version: '3.3'
-name: <your project name>
 services:
     3x-ui:
         stdin_open: true
