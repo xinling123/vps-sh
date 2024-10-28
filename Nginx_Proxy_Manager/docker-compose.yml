@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:github-pr-1574'
+    image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: always
     ports:
