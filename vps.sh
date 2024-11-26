@@ -265,15 +265,13 @@ backup_docker_date(){
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
-        read -p "请输入onedrive挂载的名字：" name
-        onedrive_name=$name
         if [ -d "/home" ]; then
             wget -O /home/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 green "定时任务已存在，将凌晨0点备份数据到onedrive"
             else
-                echo '0 0 * * * root /home/backup.sh ' $onedrive_name >> /etc/crontab
+                echo '0 0 * * * root /home/backup.sh ' >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
 
