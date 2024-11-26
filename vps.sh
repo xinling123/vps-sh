@@ -265,7 +265,7 @@ backup_docker_date(){
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
-        mkdir /home/backup/
+        mkdir /home/backup -p
         if [ -d "/home" ]; then
             wget -O /home/backup/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
