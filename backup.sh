@@ -1,79 +1,67 @@
 #!/bin/bash
 
-# Telegram Bot API相关信息
-API_TOKEN="5556876362:AAGaZ3imyYi8A01HAwgM5VeyfzJva7cvJ48"
-CHAT_ID="1287013549"
+# 获取外部传入的参数（REMOTE_PATH 的目标路径部分）
+if [ -z "$1" ]; then
+  echo "请提供 rclone 目标路径的文件夹名！"
+  exit 1
+fi
 
-# 备份文件路径
-BACKUP_DIR="/home/docker/backup/"
+# 设置文件路径和目标 rclone 远程路径
+FILE_PATH="/home/docker_banckup.tar.gz"        # 要上传的文件路径
+REMOTE_PATH="remote:$1"           # rclone 远程目标路径，通过外部参数传入
+LOG_FILE="/home/backups.log"   # 日志文件路径
 
-# 跳过备份的容器映射文件
-EXCLUDE_CONTAINERS=("qbittorrent" "emby" "dashboard-dashboard-1")
-# 跳过备份的容器
-EXCLUDE_CONTAINERS1=("ifile" "mysql_ifile" "crawlab_master" "crawlab_mongo_1" "nastools" "h5ai" "ifile" "mysql_ifile")
+# 获取当前日期
+CURRENT_DATE=$(date +%Y-%m-%d)
 
-time=$(date "+%Y-%m-%d")
+# 生成一个随机的小时和分钟（0 到 23 小时，0 到 59 分钟）
+HOUR=$(shuf -i 0-23 -n 1)
+MINUTE=$(shuf -i 0-59 -n 1)
 
-# 创建备份目录
-mkdir -p $BACKUP_DIR
+# 计算当前时间和目标时间的秒数
+CURRENT_HOUR=$(date +%H)
+CURRENT_MINUTE=$(date +%M)
+TARGET_TIME=$(($HOUR * 3600 + $MINUTE * 60))  # 随机时间的秒数
+CURRENT_TIME=$(($CURRENT_HOUR * 3600 + $CURRENT_MINUTE * 60))  # 当前时间的秒数
 
-# 备份所有容器
-for container_id in $(docker ps -aq); do
-    # 获取容器名称和镜像名称
-    container_name=$(docker inspect --format='{{.Name}}' $container_id | sed 's/\///g')
-    image_name=$(docker inspect --format='{{.Config.Image}}' $container_id)
+# 计算需要等待的时间（秒）
+if [ $TARGET_TIME -gt $CURRENT_TIME ]; then
+    SLEEP_TIME=$(($TARGET_TIME - $CURRENT_TIME))
+else
+    SLEEP_TIME=$(($TARGET_TIME - $CURRENT_TIME + 86400))  # 如果目标时间已过去，加上 24 小时（86400 秒）
+fi
 
-    echo $(date "+%Y-%m-%d %H:%M:%S"): "备份容器: $container_name" >> /home/docker/backup.log
+# 日志记录开始时间
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 开始等待随机时间，备份将在 $SLEEP_TIME 秒后开始" >> "$LOG_FILE"
 
-    # 检查是否为需要排除的容器
-    if [[ " ${EXCLUDE_CONTAINERS1[@]} " =~ " ${container_name} " ]]; then
-        echo $(date "+%Y-%m-%d %H:%M:%S"): "跳过容器备份: $container_name" >> /home/docker/backup.log
-        continue
-    fi
+# 等待随机时间
+sleep $SLEEP_TIME
 
-    # 备份容器数据
-    docker export -o $BACKUP_DIR/${container_name}_backup.tar $container_id
+# 日志记录备份开始
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 开始备份数据 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
 
-    # 备份容器的配置信息和元数据
-    docker inspect $container_id > $BACKUP_DIR/${container_name}_metadata.json
+# 删除之前的备份文件（如果存在）
+rm -rf $FILE_PATH
 
-    # 备份映射的端口
-    port_bindings=$(docker port $container_id)
-    echo $port_bindings > $BACKUP_DIR/${container_name}_port_bindings.txt
-    
-    # 检查是否为需要排除的容器
-    if [[ " ${EXCLUDE_CONTAINERS[@]} " =~ " ${container_name} " ]]; then
-        echo $(date "+%Y-%m-%d %H:%M:%S"): "跳过容器映射文件备份: $container_name" >> /home/docker/backup.log
-        continue
-    fi
+# 创建备份文件
+tar -czf $FILE_PATH /home/docker/
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份数据打包完成 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
 
-    # 备份映射的文件
-    docker inspect --format='{{ range .Mounts }}{{ .Source }}{{ printf "\n" }}{{ end }}' $container_id | while read -r source; do
-        if [ ! -z "$source" ] && [ -d "$source" ]; then
-            # 获取目录名
-            dir_name=$(basename "$source")
-            mkdir -p $BACKUP_DIR/${container_name}_mounted_files/$dir_name
-            cp -R $source $BACKUP_DIR/${container_name}_mounted_files/$dir_name
-        fi
-    done
+# 删除 14 天之前的文件
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 删除 14 天前的备份文件 " >> "$LOG_FILE"
+rclone delete "$REMOTE_PATH" --min-age 14d >> "$LOG_FILE" 2>&1
 
-done
-echo $(date "+%Y-%m-%d %H:%M:%S"): "备份完成！" >> /home/docker/backup.log
-cd $BACKUP_DIR
+# 执行 rclone 上传操作并捕获其退出状态
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 上传备份文件 '$FILE_PATH' to '$REMOTE_PATH/$CURRENT_DATE-$(basename "$FILE_PATH")'." >> "$LOG_FILE"
+rclone copy "$FILE_PATH" "$REMOTE_PATH/$CURRENT_DATE-$(basename "$FILE_PATH")"
+RCLONE_EXIT_STATUS=$?
 
-echo $(date "+%Y-%m-%d %H:%M:%S"): echo "正在打包所有文件..." >> /home/docker/backup.log
-tar --use-compress-program=pigz -cvpf $1.tar.gz $BACKUP_DIR >/dev/null 2>&1
-echo $(date "+%Y-%m-%d %H:%M:%S"): echo "打包完成！" >> /home/docker/backup.log
-echo $(date "+%Y-%m-%d %H:%M:%S"): echo "开始同步文件到OneDrive！" >> /home/docker/backup.log
-OneDriveUploader -c /home/auth.json -t 50 -s $BACKUP_DIR -r "backup/$1/$time" >/dev/null 2>&1
-# 要发送的消息
-MESSAGE="$(date "+%Y-%m-%d %H:%M:%S"): $1 同步完成！"
-echo $MESSAGE >> /home/docker/backup.log
-rm -rf $BACKUP_DIR
-echo $(date "+%Y-%m-%d %H:%M:%S"): echo "删除本地备份文件！" >> /home/docker/backup.log
+# 检查 rclone 命令的退出状态，记录成功或失败
+if [ $RCLONE_EXIT_STATUS -eq 0 ]; then
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - '$FILE_PATH' 备份成功 " >> "$LOG_FILE"
+else
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - '$FILE_PATH' 备份失败 $RCLONE_EXIT_STATUS." >> "$LOG_FILE"
+fi
 
-# 使用curl命令向Telegram Bot API发送请求
-curl -s -X POST "https://api.telegram.org/bot$API_TOKEN/sendMessage" \
-     -d "chat_id=$CHAT_ID" \
-     -d "text=$MESSAGE" >> /home/docker/backup.log
-echo "" >> /home/docker/backup.log
+# 日志记录结束时间
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份完成 " >> "$LOG_FILE"
