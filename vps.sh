@@ -266,12 +266,12 @@ backup_docker_date(){
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         if [ -d "/home" ]; then
-            wget -O /home/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup.sh
+            wget -O /home/backup/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 green "定时任务已存在，将凌晨0点备份数据到onedrive"
             else
-                echo '0 0 * * * root /home/backup.sh ' >> /etc/crontab
+                echo '0 0 * * * root /home/backup/backup.sh ' >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
 
