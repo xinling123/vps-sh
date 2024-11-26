@@ -43,25 +43,25 @@ echo "$(date +'%Y-%m-%d %H:%M:%S') - 开始备份数据 '$FILE_PATH' at $HOUR:$M
 # 删除之前的备份文件（如果存在）
 rm -rf $FILE_PATH
 
-# 创建备份文件
-tar -czf $FILE_PATH /home/docker/
-echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份数据打包完成 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
-
-# 删除 14 天之前的文件
-echo "$(date +'%Y-%m-%d %H:%M:%S') - 删除 14 天前的备份文件 " >> "$LOG_FILE"
-rclone delete "$REMOTE_PATH" --min-age 14d >> "$LOG_FILE" 2>&1
-
-# 执行 rclone 上传操作并捕获其退出状态
-echo "$(date +'%Y-%m-%d %H:%M:%S') - 上传备份文件 '$FILE_PATH' to '$REMOTE_PATH/$CURRENT_DATE-$(basename "$FILE_PATH")'." >> "$LOG_FILE"
-rclone copy "$FILE_PATH" "$REMOTE_PATH/$CURRENT_DATE-$(basename "$FILE_PATH")"
-RCLONE_EXIT_STATUS=$?
-
-# 检查 rclone 命令的退出状态，记录成功或失败
-if [ $RCLONE_EXIT_STATUS -eq 0 ]; then
-  echo "$(date +'%Y-%m-%d %H:%M:%S') - '$FILE_PATH' 备份成功 " >> "$LOG_FILE"
+# 判断是否有传入排除参数 ($2)
+if [ -n "$2" ]; then
+  # 如果有第二个参数，使用 --exclude 排除指定文件或目录
+  tar -czf $FILE_PATH /home/docker/ --exclude="$2"
 else
-  echo "$(date +'%Y-%m-%d %H:%M:%S') - '$FILE_PATH' 备份失败 $RCLONE_EXIT_STATUS." >> "$LOG_FILE"
+  # 没有第二个参数时，正常备份
+  tar -czf $FILE_PATH /home/docker/
 fi
 
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份数据打包完成 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
+
+# 按日期命名备份文件，并将其复制到挂载目录
+DEST_PATH="/data1/$CURRENT_DATE-$(basename "$FILE_PATH")"
+cp $FILE_PATH $DEST_PATH
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份文件复制到 '$DEST_PATH'" >> "$LOG_FILE"
+
+# 删除14天前的文件
+find /data1 -type f -name "*.tar.gz" -mtime +14 -exec rm -f {} \;
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 删除14天前的备份文件" >> "$LOG_FILE"
+
 # 日志记录结束时间
-echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份完成 " >> "$LOG_FILE"
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份完成" >> "$LOG_FILE"
