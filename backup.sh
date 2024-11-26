@@ -41,19 +41,20 @@ else
   # 没有第二个参数时，正常备份
   tar -czf $FILE_PATH /home/docker/
 fi
-# 删除之前的备份文件（如果存在）
-rm -rf $FILE_PATH
 
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份数据打包完成 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
+
+# 删除14天前的文件
+find /od -type f -name "*.tar.gz" -mtime +14 -exec rm -f {} \;
+echo "$(date +'%Y-%m-%d %H:%M:%S') - 删除14天前的备份文件" >> "$LOG_FILE"
 
 # 按日期命名备份文件，并将其复制到挂载目录
 DEST_PATH="/od/$CURRENT_DATE-$(basename "$FILE_PATH")"
 cp $FILE_PATH $DEST_PATH
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份文件复制到 '$DEST_PATH'" >> "$LOG_FILE"
 
-# 删除14天前的文件
-find /od -type f -name "*.tar.gz" -mtime +14 -exec rm -f {} \;
-echo "$(date +'%Y-%m-%d %H:%M:%S') - 删除14天前的备份文件" >> "$LOG_FILE"
+# 删除之前的备份文件（如果存在）
+rm -rf $FILE_PATH
 
 # 日志记录结束时间
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份完成" >> "$LOG_FILE"
