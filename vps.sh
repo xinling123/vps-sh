@@ -265,6 +265,8 @@ backup_docker_date(){
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
+        read -p "请输入onedrive挂载的名字：" name
+        onedrive_name=$name
         cd /home
         mkdir -p backup
         if [ -d "/home" ]; then
@@ -273,7 +275,7 @@ backup_docker_date(){
             if [ $? -eq 0 ]; then
                 green "定时任务已存在，将凌晨0点备份数据到onedrive"
             else
-                echo '0 0 * * * root /home/backup/backup.sh ' >> /etc/crontab
+                echo '0 0 * * * root /home/backup/backup.sh ' $onedrive_name >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
 
