@@ -266,7 +266,7 @@ backup_docker_date(){
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         cd /home
-        mkdir backup
+        mkdir -p backup
         if [ -d "/home" ]; then
             wget -O /home/backup/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup/backup.sh
             grep "backup.sh" /etc/crontab >/dev/null 2>&1
