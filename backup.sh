@@ -37,10 +37,10 @@ sleep $SLEEP_TIME
 # 日志记录备份开始
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 开始备份数据 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
 
-# 判断是否有传入排除参数 ($1)
-if [ -n "$1" ]; then
+# 判断是否有传入排除参数 ($2)
+if [ -n "$2" ]; then
   # 如果有第二个参数，使用 --exclude 排除指定文件或目录
-  tar -czf $FILE_PATH /home/docker/ --exclude="$1"
+  tar -czf $FILE_PATH /home/docker/ --exclude="$2"
 else
   # 没有第二个参数时，正常备份
   tar -czf $FILE_PATH /home/docker/
@@ -59,7 +59,7 @@ echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份文件复制到 '$DEST_PATH'" >> "$LO
 
 # 删除之前的备份文件（如果存在）
 rm -rf $FILE_PATH
-MESSAGE="$(date "+%Y-%m-%d %H:%M:%S"): 同步完成！"
+MESSAGE="$(date "+%Y-%m-%d %H:%M:%S"): $1 同步完成！"
 # 使用curl命令向Telegram Bot API发送请求
 curl -s -X POST "https://api.telegram.org/bot$API_TOKEN/sendMessage" \
      -d "chat_id=$CHAT_ID" \

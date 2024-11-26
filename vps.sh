@@ -278,7 +278,6 @@ backup_docker_date(){
                 echo '0 0 * * * root /home/backup/backup.sh ' $onedrive_name >> /etc/crontab
                 green "将每隔3天凌晨4点备份数据到onedrive"
             fi
-
         else
             red "未检测到 /home 文件夹"
         fi
