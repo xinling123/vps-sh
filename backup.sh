@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Telegram Bot API相关信息
+API_TOKEN="5556876362:AAGaZ3imyYi8A01HAwgM5VeyfzJva7cvJ48"
+CHAT_ID="1287013549"
+
 # 设置文件路径和目标 rclone 远程路径
 FILE_PATH="/home/backup/docker_banckup.tar.gz"        # 要上传的文件路径
 LOG_FILE="/home/backup/backups.log"   # 日志文件路径
@@ -56,5 +60,10 @@ echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份文件复制到 '$DEST_PATH'" >> "$LO
 # 删除之前的备份文件（如果存在）
 rm -rf $FILE_PATH
 
+# 使用curl命令向Telegram Bot API发送请求
+curl -s -X POST "https://api.telegram.org/bot$API_TOKEN/sendMessage" \
+     -d "chat_id=$CHAT_ID" \
+     -d "text=$MESSAGE" >> "$LOG_FILE"
 # 日志记录结束时间
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份完成" >> "$LOG_FILE"
+echo "" >> "$LOG_FILE"
