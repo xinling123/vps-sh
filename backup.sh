@@ -8,7 +8,6 @@ fi
 
 # 设置文件路径和目标 rclone 远程路径
 FILE_PATH="/home/docker_banckup.tar.gz"        # 要上传的文件路径
-REMOTE_PATH="remote:$1"           # rclone 远程目标路径，通过外部参数传入
 LOG_FILE="/home/backups.log"   # 日志文件路径
 
 # 获取当前日期
@@ -43,10 +42,10 @@ echo "$(date +'%Y-%m-%d %H:%M:%S') - 开始备份数据 '$FILE_PATH' at $HOUR:$M
 # 删除之前的备份文件（如果存在）
 rm -rf $FILE_PATH
 
-# 判断是否有传入排除参数 ($2)
-if [ -n "$2" ]; then
+# 判断是否有传入排除参数 ($1)
+if [ -n "$1" ]; then
   # 如果有第二个参数，使用 --exclude 排除指定文件或目录
-  tar -czf $FILE_PATH /home/docker/ --exclude="$2"
+  tar -czf $FILE_PATH /home/docker/ --exclude="$1"
 else
   # 没有第二个参数时，正常备份
   tar -czf $FILE_PATH /home/docker/
@@ -55,12 +54,12 @@ fi
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份数据打包完成 '$FILE_PATH' at $HOUR:$MINUTE" >> "$LOG_FILE"
 
 # 按日期命名备份文件，并将其复制到挂载目录
-DEST_PATH="/data1/$CURRENT_DATE-$(basename "$FILE_PATH")"
+DEST_PATH="/od/$CURRENT_DATE-$(basename "$FILE_PATH")"
 cp $FILE_PATH $DEST_PATH
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 备份文件复制到 '$DEST_PATH'" >> "$LOG_FILE"
 
 # 删除14天前的文件
-find /data1 -type f -name "*.tar.gz" -mtime +14 -exec rm -f {} \;
+find /od -type f -name "*.tar.gz" -mtime +14 -exec rm -f {} \;
 echo "$(date +'%Y-%m-%d %H:%M:%S') - 删除14天前的备份文件" >> "$LOG_FILE"
 
 # 日志记录结束时间
