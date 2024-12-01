@@ -39,3 +39,5 @@ except pexpect.TIMEOUT:
     print("操作超时，请检查脚本运行状态。")
 except pexpect.EOF:
     print("脚本提前结束或无法继续执行。")
+
+
