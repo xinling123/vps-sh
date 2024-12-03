@@ -10,6 +10,8 @@ FILE_PATH="/home/backup/docker_banckup.tar.gz"        # 要上传的文件路径
 LOG_FILE="/home/backup/backups.log"   # 日志文件路径
 
 
+
+
 # 获取当前日期
 CURRENT_DATE=$(date +%Y-%m-%d)
 
