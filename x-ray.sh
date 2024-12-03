@@ -104,6 +104,7 @@ checkCPUVendor() {
         v2rayCoreCPUVendor="v2ray-linux-64"
     fi
 }
+
 # 初始化全局变量
 initVar() {
     installType='yum -y install'
