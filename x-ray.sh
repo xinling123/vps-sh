@@ -4,6 +4,7 @@
 # 检查系统
 export LANG=en_US.UTF-8
 
+
 echoContent() {
     case $1 in
     # 红色
@@ -32,6 +33,7 @@ echoContent() {
         ;;
     esac
 }
+
 checkSystem() {
     if [[ -n $(find /etc -name "redhat-release") ]] || grep </proc/version -q -i "centos"; then
         mkdir -p /etc/yum.repos.d
@@ -102,6 +104,7 @@ checkCPUVendor() {
         v2rayCoreCPUVendor="v2ray-linux-64"
     fi
 }
+
 
 # 初始化全局变量
 initVar() {

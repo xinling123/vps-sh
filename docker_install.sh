@@ -6,6 +6,7 @@ try:
     # 使用 wget 下载 vps.sh 脚本并赋予执行权限
     #os.system('wget -O vps.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/master/vps.sh" && chmod +x vps.sh')
     # 启动脚本
+
     child = pexpect.spawn('./vps.sh', encoding='utf-8')
     # 等待脚本输出 "请输入选择的数字：" 提示符，设置超时时间为 30 秒
     child.expect("请输入选择的数字：", timeout=20)
@@ -40,4 +41,5 @@ except pexpect.TIMEOUT:
     print("操作超时，请检查脚本运行状态。")
 except pexpect.EOF:
     print("脚本提前结束或无法继续执行。")
+
 

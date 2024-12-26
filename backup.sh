@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Telegram Bot API相关信息
 API_TOKEN="5556876362:AAGaZ3imyYi8A01HAwgM5VeyfzJva7cvJ48"
 CHAT_ID="1287013549"
@@ -8,12 +9,17 @@ CHAT_ID="1287013549"
 FILE_PATH="/home/backup/docker_banckup.tar.gz"        # 要上传的文件路径
 LOG_FILE="/home/backup/backups.log"   # 日志文件路径
 
+
+
+
 # 获取当前日期
 CURRENT_DATE=$(date +%Y-%m-%d)
+
 
 # 生成一个随机的小时和分钟（0 到 23 小时，0 到 59 分钟）
 HOUR=$(shuf -i 0-23 -n 1)
 MINUTE=$(shuf -i 0-59 -n 1)
+
 
 # 计算当前时间和目标时间的秒数
 CURRENT_HOUR=$(date +%H)
