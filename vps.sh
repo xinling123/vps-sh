@@ -16,6 +16,7 @@ green() {
 	echo -e "\033[32m\033[01m$1\033[0m"
 }
 
+
 # 显示黄色的输出
 yellow() {
 	echo -e "\033[33m\033[01m$1\033[0m"
@@ -40,6 +41,7 @@ docker_install(){
     fi
 }
 
+
 # docker容器选择
 docker_index(){
     case $1 in 
@@ -55,6 +57,7 @@ docker_index(){
     *) red "输入错误";;
     esac
 }
+
 
 # 安装3x-ui面板
 docker_3x-ui(){
@@ -73,6 +76,7 @@ docker_3x-ui(){
     cd ../..
 }
 
+
 # 安装Uptime Kuma
 docker_Uptime_Kuma(){
     if [ -d "vps-sh/Uptime_Kuma/" ]; then
@@ -89,6 +93,7 @@ docker_Uptime_Kuma(){
     fi
     cd ../..
 }
+
 
 # 安装qbittorrent
 docker_qbittorrent(){
