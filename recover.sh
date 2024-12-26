@@ -2,10 +2,8 @@
 
 # 备份文件路径
 BACKUP_DIR="/home/docker"
-
 # 恢复备份文件的目标路径
 RESTORE_DIR="/home/back"
-
 # 获取备份文件中的容器列表
 container_files=$(ls $RESTORE_DIR | grep "_backup.tar")
 
