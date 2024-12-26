@@ -107,6 +107,7 @@ docker_qbittorrent(){
     cd ../..
 }
 
+
 # 安装NAS-TOOL
 docker_NAS_TOOL(){
     if [ -d "vps-sh/NAS_Tool/" ]; then
@@ -123,6 +124,7 @@ docker_NAS_TOOL(){
     fi
     cd ../..
 }
+
 
 # 安装Halo
 docker_Halo(){
@@ -141,6 +143,7 @@ docker_Halo(){
     cd ../..
 }
 
+
 # 安装emby
 docker_emby(){
     if [ -d "vps-sh/Emby/" ]; then
@@ -158,6 +161,7 @@ docker_emby(){
     cd ../..
 }
 
+
 # 安装Easyimage
 docker_Easyimage(){
     if [ -d "vps-sh/Easyimage/" ]; then
@@ -174,6 +178,7 @@ docker_Easyimage(){
     fi
     cd ../..
 }
+
 
 # 安装Nginx_Proxy_Manager
 docker_Nginx_Proxy_Manager(){

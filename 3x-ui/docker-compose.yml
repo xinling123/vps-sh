@@ -13,3 +13,5 @@ services:
         container_name: 3x-ui
         image: ghcr.io/mhsanaei/3x-ui:latest
 
+
+
