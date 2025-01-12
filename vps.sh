@@ -302,16 +302,16 @@ backup_docker_date(){
 system_init(){
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     apt update -y && apt install wget curl git -y
-    read -p "是否挂载硬盘[默认n]：" y
-    [[ -z "${y}" ]] && y="n"
-    if [ $y == "y" ]; then
-        fdisk /dev/sda
-        mkfs.ext4 /dev/sda1
-        mkdir /data1
-        chmod 777 /data1
-        mount /dev/sda1 /data1
-        echo '/dev/sda1 /data1 ext4 defaults  0  0' >> /etc/fstab
-    fi
+    # read -p "是否挂载硬盘[默认n]：" y
+    # [[ -z "${y}" ]] && y="n"
+    # if [ $y == "y" ]; then
+    #     fdisk /dev/sda
+    #     mkfs.ext4 /dev/sda1
+    #     mkdir /data1
+    #     chmod 777 /data1
+    #     mount /dev/sda1 /data1
+    #     echo '/dev/sda1 /data1 ext4 defaults  0  0' >> /etc/fstab
+    # fi
     read -p "是否增加虚拟内存[默认n]：" y
     [[ -z "${y}" ]] && y="n"
     if [ $y == "y" ]; then
