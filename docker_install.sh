@@ -2,6 +2,7 @@ import pexpect
 import os
 
 
+
 try:
     # 使用 wget 下载 vps.sh 脚本并赋予执行权限
     #os.system('wget -O vps.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/master/vps.sh" && chmod +x vps.sh')

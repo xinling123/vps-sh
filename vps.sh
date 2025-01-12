@@ -302,6 +302,7 @@ backup_docker_date(){
 system_init(){
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     apt update -y && apt install wget curl git -y
+
     # read -p "是否挂载硬盘[默认n]：" y
     # [[ -z "${y}" ]] && y="n"
     # if [ $y == "y" ]; then
@@ -312,22 +313,27 @@ system_init(){
     #     mount /dev/sda1 /data1
     #     echo '/dev/sda1 /data1 ext4 defaults  0  0' >> /etc/fstab
     # fi
+
     read -p "是否增加虚拟内存[默认n]：" y
     [[ -z "${y}" ]] && y="n"
     if [ $y == "y" ]; then
         wget https://www.moerats.com/usr/shell/swap.sh && bash swap.sh
     fi
+
     read -p "是否启动bbr加速[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         wget -N --no-check-certificate "https://github.000060000.xyz/tcpx.sh" && chmod +x tcpx.sh && ./tcpx.sh
     fi
+
+
     read -p "是否重启[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         reboot
     fi
 }
+
 
 
 x-ray(){
