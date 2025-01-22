@@ -320,12 +320,12 @@ system_init(){
         wget https://www.moerats.com/usr/shell/swap.sh && bash swap.sh
     fi
 
+
     read -p "是否启动bbr加速[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         wget -N --no-check-certificate "https://github.000060000.xyz/tcpx.sh" && chmod +x tcpx.sh && ./tcpx.sh
     fi
-
 
     read -p "是否重启[默认y]：" y
     [[ -z "${y}" ]] && y="y"
@@ -333,8 +333,6 @@ system_init(){
         reboot
     fi
 }
-
-
 
 x-ray(){
     wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" && chmod 700 /root/install.sh && /root/install.sh
@@ -351,6 +349,7 @@ start(){
         yellow "3.备份docker数据到onedrive"
         yellow "4.安装x-ray"
 
+
         read -p "请输入选择的数字：" number
         for i in ${number[@]};
         do
@@ -365,6 +364,7 @@ start(){
         done
     done
 }
+
 
 [[ $EUID -ne 0 ]] && red "请在root用户下运行脚本" && exit 1 
 myip=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
