@@ -11,7 +11,7 @@ services:
         network_mode: host
         restart: unless-stopped
         container_name: 3x-ui
-        image: ghcr.io/mhsanaei/3x-ui:latest
+        image: ghcr.io/mhsanaei/3x-ui:2.6.0
 
 
 
