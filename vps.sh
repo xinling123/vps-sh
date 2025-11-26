@@ -32,9 +32,17 @@ docker_install(){
         yellow "开始安装docker"
         curl -fsSL https://get.docker.com | bash
         systemctl enable docker
-        apt install docker-compose -y
-        curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
-        chmod +x /usr/bin/docker-compose
+        apt update
+        apt install -y docker-compose-plugin
+
+        read -p "是否修改docker api最小要求版本[默认y]：" y
+        [[ -z "${y}" ]] && y="y"
+        if [ $y == "y" ]; then
+            mkdir -p /etc/docker
+            echo '{"min-api-version": "1.24"}' > /etc/docker/daemon.json
+            systemctl daemon-reload && systemctl restart docker
+            green "修改docker api版本成功"
+        fi
         docker --version
         docker-compose --version
         green "docker安装完成"
@@ -246,15 +254,15 @@ docker_container(){
 
 
 backup_docker_date(){
-    # if type rclone >/dev/null 2>&1; then
-    #     green "rclone已经安装"
-    # else
-    #     yellow "开始安装rclone"
-    #     apt install zip -y
-    #     curl https://rclone.org/install.sh | bash
-    #     rclone config
-    #     green "rclone安装完成"
-    # fi
+    if type rclone >/dev/null 2>&1; then
+        green "rclone已经安装"
+    else
+        yellow "开始安装rclone"
+        apt install zip -y
+        curl https://rclone.org/install.sh | bash
+        rclone config
+        green "rclone安装完成"
+    fi
     # wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
     # chmod +x /usr/local/bin/OneDriveUploader
     # if command -v pigz &> /dev/null; then
@@ -263,17 +271,18 @@ backup_docker_date(){
     #     echo "pigz 未安装"
     # fi
 
-    # read -p "是否挂载onedrive[默认y]：" y
-    # [[ -z "${y}" ]] && y="y"
-    # if [ $y == "y" ]; then
-    #     apt install fuse -y
-    #     cd /
-    #     mkdir onedrive
-    #     chmod 777 onedrive/
-        # read -p "请输入onedrive挂载的名字：" name
-        # $onedrive_name = $name
-    #     rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
-    # fi
+    read -p "是否挂载onedrive[默认y]：" y
+    [[ -z "${y}" ]] && y="y"
+    if [ $y == "y" ]; then
+        apt install fuse -y
+        cd /
+        mkdir onedrive
+        chmod 777 onedrive/
+        read -p "请输入onedrive挂载的名字：" name
+        $onedrive_name = $name
+        rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
+    fi
+
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
@@ -301,7 +310,7 @@ backup_docker_date(){
 # 系统初始化
 system_init(){
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    apt update -y && apt install wget curl git -y
+    apt update -y && apt install wget curl git vnstat -y
 
     # read -p "是否挂载硬盘[默认n]：" y
     # [[ -z "${y}" ]] && y="n"
@@ -313,52 +322,51 @@ system_init(){
     #     mount /dev/sda1 /data1
     #     echo '/dev/sda1 /data1 ext4 defaults  0  0' >> /etc/fstab
     # fi
-
-    read -p "是否增加虚拟内存[默认n]：" y
-    [[ -z "${y}" ]] && y="n"
-    if [ $y == "y" ]; then
-        wget https://www.moerats.com/usr/shell/swap.sh && bash swap.sh
-    fi
-
-
-    read -p "是否启动bbr加速[默认y]：" y
-    [[ -z "${y}" ]] && y="y"
-    if [ $y == "y" ]; then
-        wget -N --no-check-certificate "https://github.000060000.xyz/tcpx.sh" && chmod +x tcpx.sh && ./tcpx.sh
-    fi
-
-    read -p "是否重启[默认y]：" y
-    [[ -z "${y}" ]] && y="y"
-    if [ $y == "y" ]; then
-        reboot
-    fi
 }
 
-x-ray(){
-    wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" && chmod 700 /root/install.sh && /root/install.sh
+
+swap_init(){
+    wget https://www.moerats.com/usr/shell/swap.sh && bash swap.sh
 }
+
+dd_init(){
+    read -p "debian系统版本（11/12）：" debian_version
+    read -p "ssh端口号：" ssh_port
+    read -p "root密码：" root_pwd
+
+    wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh && bash InstallNET.sh -debian $debian_version --bbr -port  $ssh_port -pwd $root_pwd
+}
+
+tcp_init(){
+    wget -O tcpx.sh "https://github.com/ylx2016/Linux-NetSpeed/raw/master/tcpx.sh" && chmod +x tcpx.sh && ./tcpx.sh
+}
+
 
 # 初始化界面
 start(){
     while true
     do 
         yellow "\r\n"
-        yellow "0.安装系统更新包"
-        yellow "1.安装docker"
-        yellow "2.安装docker容器"
-        yellow "3.备份docker数据到onedrive"
-        yellow "4.安装x-ray"
+        yellow "0.一键dd脚本"
+        yellow "1.安装系统更新包"
+        yellow "2.增加虚拟内存"
+        yellow "3.tcp网络调优（建议11和22）"
+        yellow "4.安装docker"
+        yellow "5.安装docker容器"
+        # yellow "6.备份docker数据到onedrive"
 
 
         read -p "请输入选择的数字：" number
         for i in ${number[@]};
         do
             case $i in 
-            0) system_init ;;
-            1) docker_install ;;
-            2) docker_container ;;
-            3) backup_docker_date ;;
-            4) x-ray;;
+            0) dd_init ;;
+            1) system_init ;;
+            2) swap_init ;;
+            3) tcp_init ;;
+            4) docker_install ;;
+            5) docker_container ;;
+            # 6) backup_docker_date ;;
             *) red "输入错误";;
             esac
         done
