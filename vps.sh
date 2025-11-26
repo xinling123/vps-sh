@@ -274,42 +274,34 @@ backup_docker_date(){
     read -p "是否挂载onedrive[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
-        apt install fuse -y
+        apt install fuse3 -y
         cd /
         mkdir onedrive
         chmod 777 onedrive/
         read -p "请输入onedrive挂载的名字：" name
         $onedrive_name = $name
-        rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
+        rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
+        green "onedrive挂载成功"
     fi
 
-    read -p "是否挂载onedrive[默认y]：" y
-        [[ -z "${y}" ]] && y="y"
-        if [ $y == "y" ]; then
-            yellow "开始安装自动备份工具"
-            curl -fsSL https://raw.githubusercontent.com/shuguangnet/docker_backup_script/main/install.sh | bash
+    read -p "是否安装自动备份工具[默认y]：" y
+    [[ -z "${y}" ]] && y="y"
+    if [ $y == "y" ]; then
+        yellow "开始安装自动备份工具"
+        curl -fsSL https://raw.githubusercontent.com/shuguangnet/docker_backup_script/main/install.sh | bash
+        green "自动备份工具安装完成"
     fi
-    
-    # read -p "是否开始自动备份[默认y]：" y
-    # [[ -z "${y}" ]] && y="y"
-    # if [ $y == "y" ]; then
-    #     read -p "请输入onedrive挂载的名字：" name
-    #     onedrive_name=$name
-    #     cd /home
-    #     mkdir -p backup
-    #     if [ -d "/home" ]; then
-    #         wget -O /home/backup/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup/backup.sh
-    #         grep "backup.sh" /etc/crontab >/dev/null 2>&1
-    #         if [ $? -eq 0 ]; then
-    #             green "定时任务已存在，将凌晨0点备份数据到onedrive"
-    #         else
-    #             echo '0 0 * * * root /home/backup/backup.sh ' $onedrive_name >> /etc/crontab
-    #             green "将每隔3天凌晨4点备份数据到onedrive"
-    #         fi
-    #     else
-    #         red "未检测到 /home 文件夹"
-    #     fi
-    # fi
+
+    read -p "是否开始自动备份[默认y]：" y
+    [[ -z "${y}" ]] && y="y"
+    if [ $y == "y" ]; then
+        systemctl start docker-backup.timer
+
+        echo "0 3 * * 4 docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >/dev/null 2>&1
+# 每周四凌晨3点清理旧备份
+0 3 * * 4 docker-backup find /onedrive -type d -mtime +60 -exec rm -rf {} \; >/dev/null 2>&1
+" >> /etc/crontab
+    fi
 }
 
 
