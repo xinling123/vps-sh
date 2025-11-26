@@ -283,26 +283,29 @@ backup_docker_date(){
         rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
     fi
 
-    read -p "是否开始自动备份[默认y]：" y
-    [[ -z "${y}" ]] && y="y"
-    if [ $y == "y" ]; then
-        read -p "请输入onedrive挂载的名字：" name
-        onedrive_name=$name
-        cd /home
-        mkdir -p backup
-        if [ -d "/home" ]; then
-            wget -O /home/backup/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup/backup.sh
-            grep "backup.sh" /etc/crontab >/dev/null 2>&1
-            if [ $? -eq 0 ]; then
-                green "定时任务已存在，将凌晨0点备份数据到onedrive"
-            else
-                echo '0 0 * * * root /home/backup/backup.sh ' $onedrive_name >> /etc/crontab
-                green "将每隔3天凌晨4点备份数据到onedrive"
-            fi
-        else
-            red "未检测到 /home 文件夹"
-        fi
-    fi
+    yellow "开始安装自动备份工具"
+    curl -fsSL https://raw.githubusercontent.com/shuguangnet/docker_backup_script/main/install.sh | bash
+
+    # read -p "是否开始自动备份[默认y]：" y
+    # [[ -z "${y}" ]] && y="y"
+    # if [ $y == "y" ]; then
+    #     read -p "请输入onedrive挂载的名字：" name
+    #     onedrive_name=$name
+    #     cd /home
+    #     mkdir -p backup
+    #     if [ -d "/home" ]; then
+    #         wget -O /home/backup/backup.sh --no-check-certificate "https://raw.githubusercontent.com/xinling123/vps-sh/refs/heads/master/backup.sh" && chmod +x /home/backup/backup.sh
+    #         grep "backup.sh" /etc/crontab >/dev/null 2>&1
+    #         if [ $? -eq 0 ]; then
+    #             green "定时任务已存在，将凌晨0点备份数据到onedrive"
+    #         else
+    #             echo '0 0 * * * root /home/backup/backup.sh ' $onedrive_name >> /etc/crontab
+    #             green "将每隔3天凌晨4点备份数据到onedrive"
+    #         fi
+    #     else
+    #         red "未检测到 /home 文件夹"
+    #     fi
+    # fi
 }
 
 
@@ -353,7 +356,7 @@ start(){
         yellow "3.tcp网络调优（建议11和22）"
         yellow "4.安装docker"
         yellow "5.安装docker容器"
-        # yellow "6.备份docker数据到onedrive"
+        yellow "6.安装备份工具"
 
 
         read -p "请输入选择的数字：" number
@@ -366,7 +369,7 @@ start(){
             3) tcp_init ;;
             4) docker_install ;;
             5) docker_container ;;
-            # 6) backup_docker_date ;;
+            6) backup_docker_date ;;
             *) red "输入错误";;
             esac
         done
