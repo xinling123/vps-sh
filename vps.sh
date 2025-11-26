@@ -283,9 +283,13 @@ backup_docker_date(){
         rclone mount ${name}:/ /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
     fi
 
-    yellow "开始安装自动备份工具"
-    curl -fsSL https://raw.githubusercontent.com/shuguangnet/docker_backup_script/main/install.sh | bash
-
+    read -p "是否挂载onedrive[默认y]：" y
+        [[ -z "${y}" ]] && y="y"
+        if [ $y == "y" ]; then
+            yellow "开始安装自动备份工具"
+            curl -fsSL https://raw.githubusercontent.com/shuguangnet/docker_backup_script/main/install.sh | bash
+    fi
+    
     # read -p "是否开始自动备份[默认y]：" y
     # [[ -z "${y}" ]] && y="y"
     # if [ $y == "y" ]; then
