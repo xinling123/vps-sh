@@ -364,6 +364,10 @@ tcp_init(){
     wget -O tcpx.sh "https://github.com/ylx2016/Linux-NetSpeed/raw/master/tcpx.sh" && chmod +x tcpx.sh && ./tcpx.sh
 }
 
+dns_init(){
+    chmod +x ./dns_clean.sh && ./dns_clean.sh
+}
+
 
 # 初始化界面
 start(){
@@ -374,9 +378,10 @@ start(){
         yellow "1.安装系统更新包"
         yellow "2.增加虚拟内存"
         yellow "3.tcp网络调优（建议11和22）"
-        yellow "4.安装docker"
-        yellow "5.安装docker容器"
-        yellow "6.安装备份工具"
+        yellow "4.dns清理优化"
+        yellow "5.安装docker"
+        yellow "6.安装docker容器"
+        yellow "7.安装备份工具"
 
 
         read -p "请输入选择的数字：" number
@@ -387,9 +392,10 @@ start(){
             1) system_init ;;
             2) swap_init ;;
             3) tcp_init ;;
-            4) docker_install ;;
-            5) docker_container ;;
-            6) backup_docker_date ;;
+            4) dns_init ;;
+            5) docker_install ;;
+            6) docker_container ;;
+            7) backup_docker_date ;;
             *) red "输入错误";;
             esac
         done
