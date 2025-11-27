@@ -283,6 +283,13 @@ backup_docker_date(){
 
         rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
         green "onedrive挂载成功"
+
+        # 添加开机自动挂载
+        echo "#!/bin/bash
+rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon" > /etc/init.d/onedrive-mount
+        chmod +x /etc/init.d/onedrive-mount
+        update-rc.d onedrive-mount defaults
+        green "已添加开机自动挂载"
     fi
 
     read -p "是否安装自动备份工具[默认y]：" y
@@ -297,7 +304,7 @@ backup_docker_date(){
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
         systemctl start docker-backup.timer
-
+        > /etc/cron.d/docker-backup
         echo "0 3 * * 5 docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >/dev/null 2>&1
 # 每周四凌晨3点清理旧备份
 0 3 * * 5 docker-backup find /onedrive -type d -mtime +60 -exec rm -rf {} \; >/dev/null 2>&1
