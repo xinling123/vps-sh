@@ -329,7 +329,7 @@ EOF
 # 系统初始化
 system_init(){
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    apt update -y && apt install wget curl git vnstat -y
+    apt update -y && apt install wget curl git vnstat fail2ban -y
 
     # read -p "是否挂载硬盘[默认n]：" y
     # [[ -z "${y}" ]] && y="n"
