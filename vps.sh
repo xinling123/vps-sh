@@ -365,7 +365,7 @@ tcp_init(){
 }
 
 dns_init(){
-    chmod +x ./dns_clean.sh && ./dns_clean.sh
+    chmod +x /home/vps-sh/dns_clean.sh && /home/vps-sh/dns_clean.sh
 }
 
 
