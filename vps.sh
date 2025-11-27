@@ -35,6 +35,7 @@ docker_install(){
         curl -fsSL https://get.docker.com | bash
         systemctl enable docker
 
+
         read -p "是否修改docker api最小要求版本[默认y]：" y
         [[ -z "${y}" ]] && y="y"
         if [ $y == "y" ]; then
