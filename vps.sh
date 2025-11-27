@@ -281,14 +281,24 @@ backup_docker_date(){
         chmod 777 onedrive/
         read -p "请输入onedrive挂载的名字：" name
 
-        rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
-        green "onedrive挂载成功"
+        cat > /etc/systemd/system/onedrive-mount.service << EOF
+[Unit]
+Description=OneDrive Mount Service
+After=network.target
 
-        # 添加开机自动挂载
-        echo "#!/bin/bash
-rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon" > /etc/init.d/onedrive-mount
-        chmod +x /etc/init.d/onedrive-mount
-        update-rc.d onedrive-mount defaults
+[Service]
+Type=forking
+ExecStart=/usr/bin/rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
+ExecStop=/bin/fusermount -u /onedrive
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+        systemctl daemon-reload
+        systemctl start onedrive-mount.service
+        systemctl enable onedrive-mount.service
+        green "onedrive挂载成功"
         green "已添加开机自动挂载"
     fi
 
