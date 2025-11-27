@@ -298,9 +298,9 @@ backup_docker_date(){
     if [ $y == "y" ]; then
         systemctl start docker-backup.timer
 
-        echo "0 3 * * 4 docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >/dev/null 2>&1
+        echo "0 3 * * 5 docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >/dev/null 2>&1
 # 每周四凌晨3点清理旧备份
-0 3 * * 4 docker-backup find /onedrive -type d -mtime +60 -exec rm -rf {} \; >/dev/null 2>&1
+0 3 * * 5 docker-backup find /onedrive -type d -mtime +60 -exec rm -rf {} \; >/dev/null 2>&1
 " >> /etc/crontab
     fi
 }
