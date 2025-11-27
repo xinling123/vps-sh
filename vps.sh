@@ -30,10 +30,10 @@ docker_install(){
         green "docker已经安装"
     else  # 开始安装docker
         yellow "开始安装docker"
+        apt update
+        apt install -y docker-compose
         curl -fsSL https://get.docker.com | bash
         systemctl enable docker
-        apt update
-        apt install -y docker-compose-plugin
 
         read -p "是否修改docker api最小要求版本[默认y]：" y
         [[ -z "${y}" ]] && y="y"
@@ -43,7 +43,7 @@ docker_install(){
             systemctl daemon-reload && systemctl restart docker
             green "修改docker api版本成功"
         fi
-        docker --version
+        docker version
         docker-compose --version
         green "docker安装完成"
     fi
@@ -329,11 +329,15 @@ swap_init(){
 }
 
 dd_init(){
+    
     read -p "debian系统版本（11/12）：" debian_version
     read -p "ssh端口号：" ssh_port
     read -p "root密码：" root_pwd
 
     wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh && bash InstallNET.sh -debian $debian_version --bbr -port  $ssh_port -pwd $root_pwd
+    yellow "dd系统预计需要5-10分钟，请耐心等待"
+    sleep 10
+    reboot
 }
 
 tcp_init(){
