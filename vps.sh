@@ -280,7 +280,7 @@ backup_docker_date(){
         mkdir onedrive
         chmod 777 onedrive/
         read -p "请输入onedrive挂载的名字：" name
-        $onedrive_name = $name
+
         rclone mount od:/${name} /onedrive --copy-links --allow-other --allow-non-empty --umask 000 --daemon
         green "onedrive挂载成功"
     fi
@@ -301,7 +301,9 @@ backup_docker_date(){
         echo "0 3 * * 5 docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >/dev/null 2>&1
 # 每周四凌晨3点清理旧备份
 0 3 * * 5 docker-backup find /onedrive -type d -mtime +60 -exec rm -rf {} \; >/dev/null 2>&1
-" >> /etc/crontab
+" >> /etc/cron.d/docker-backup
+
+        green "自动备份工具启动成功"
     fi
 }
 
