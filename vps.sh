@@ -315,9 +315,11 @@ EOF
     if [ $y == "y" ]; then
         systemctl start docker-backup.timer
         > /etc/cron.d/docker-backup
-        echo "0 3 * * 5 docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >/dev/null 2>&1
-# 每周四凌晨3点清理旧备份
-0 3 * * 5 docker-backup find /onedrive -type d -mtime +60 -exec rm -rf {} \; >/dev/null 2>&1
+        echo "0 3 * * 6 root /usr/local/bin/docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >> /var/log/docker-backup.log 2>&1
+
+0 4 * * 6 root /usr/bin/find /onedrive -type d -mtime +60 -exec /bin/rm -rf {} \; >> /var/log/docker-clean.log 2>&1
+
+
 " >> /etc/cron.d/docker-backup
 
         green "自动备份工具启动成功"
