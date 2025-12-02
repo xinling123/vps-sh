@@ -211,6 +211,7 @@ docker_Nginx_Proxy_Manager(){
     cd ../..
 }
 
+
 # 选择安装docker容器
 docker_container(){
     read -p "请输入docker容器安装路径[默认/home/docker/]:" docker_container_path
@@ -225,6 +226,7 @@ docker_container(){
     git clone https://github.com/xinling123/vps-sh.git
     # cp -r vps-sh/. $docker_container_path
     # rm -rf vps-sh/
+
 
     count=0
     while [ $count -eq 0 ]
