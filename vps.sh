@@ -315,7 +315,7 @@ EOF
     read -p "是否开始自动备份[默认y]：" y
     [[ -z "${y}" ]] && y="y"
     if [ $y == "y" ]; then
-        systemctl start docker-backup.timer
+        # systemctl start docker-backup.timer
         > /etc/cron.d/docker-backup
         echo "0 3 * * 6 root /usr/local/bin/docker-backup -a -c /opt/docker-backup/backup.conf.local -o /onedrive >> /var/log/docker-backup.log 2>&1
 
