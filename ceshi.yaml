@@ -1,3 +1,7 @@
+proxies:
+  - name: 直连
+    type: direct
+
 proxy-groups:
   - name: ♻️ 自动选择
     type: select
