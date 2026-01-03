@@ -173,15 +173,15 @@ proxy-groups:
 
 # 规则匹配
 rules:
-  - DOMAIN-SUFFIX,steamcontent.com,直连
-  - DOMAIN-SUFFIX,steamserver.net,直连
-  - RULE-SET,GameDownload,直连
-  - GEOSITE,steam@cn,直连
-  - GEOSITE,category-games@cn,直连
+  - DOMAIN-SUFFIX,steamcontent.com,🎯 直连
+  - DOMAIN-SUFFIX,steamserver.net,🎯 直连
+  - RULE-SET,GameDownload,🎯 直连
+  - GEOSITE,steam@cn,🎯 直连
+  - GEOSITE,category-games@cn,🎯 直连
   - GEOSITE,category-games,🎮 Steam
 
-  - RULE-SET,private_ip,直连,no-resolve
-  - RULE-SET,private_domain,直连
+  - RULE-SET,private_ip,🎯 直连,no-resolve
+  - RULE-SET,private_domain,🎯 直连
   - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
   - RULE-SET,proxylite,🚀 默认代理
   - RULE-SET,ai,🤖 ChatGPT
@@ -191,18 +191,18 @@ rules:
   - RULE-SET,google_domain,🍀 Google
   - RULE-SET,onedrive_domain,🐬 OneDrive
   - RULE-SET,microsoft_domain,🪟 Microsoft
-  - RULE-SET,apple_domain,直连
+  - RULE-SET,apple_domain,🎯 直连
   - RULE-SET,tiktok_domain,🎵 TikTok
   - RULE-SET,telegram_domain,📲 Telegram
   - RULE-SET,netflix_domain,🎥 NETFLIX
   - RULE-SET,paypal_domain,💶 PayPal
-  - RULE-SET,apple_ip,直连
+  - RULE-SET,apple_ip,🎯 直连
   - RULE-SET,google_ip,🍀 Google
   - RULE-SET,netflix_ip,🎥 NETFLIX
   - RULE-SET,telegram_ip,📲 Telegram
   - RULE-SET,geolocation-!cn,🚀 默认代理
-  - RULE-SET,cn_domain,直连
-  - RULE-SET,cn_ip,直连
+  - RULE-SET,cn_domain,🎯 直连
+  - RULE-SET,cn_ip,🎯 直连
   - MATCH,🐟 漏网之鱼
 
 # 规则集
